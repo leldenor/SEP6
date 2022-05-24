@@ -1,9 +1,47 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@using SEP6.Components
 
-<h1>Hello, world!</h1>
+<PageTitle>Home page</PageTitle>
 
-Welcome to your new app.
+<div>
+    <Carousel Autoplay="TimeSpan.FromSeconds(4)">
+        <CarouselSlick>1</CarouselSlick>
+		<CarouselSlick>2</CarouselSlick>
+		<CarouselSlick>3</CarouselSlick>
+		<CarouselSlick>4</CarouselSlick>
+		<CarouselSlick>5</CarouselSlick>
+    </Carousel>
+</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div>
+<Row Gutter="16">
+    <GridCol Span="8">
+        <MovieCards />
+    </GridCol>
+    <GridCol Span="8">
+        <MovieCards />
+    </GridCol>
+</Row>
+</div>
+
+<style>
+	div {
+		padding-bottom: 10px;
+	}
+	.ant-carousel {
+		width: 1000px;
+    }
+    .ant-carousel .slick-slide {
+        text-align: center;
+        background: #364d79;
+		line-height: 400px;
+		overflow: hidden;
+    }
+</style>
+
+@code{
+    
+}
+
+
