@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<PackageReference Include="TMDbLib" Version="1.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AntDesign" Version="0.10.7" />
   </ItemGroup>
 

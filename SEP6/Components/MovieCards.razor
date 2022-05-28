@@ -1,26 +1,39 @@
-﻿
-<Card Style="width:300px;" Bordered Cover="coverTemplate">
-	<ChildContent>
-        <CardMeta Title="Avatar" Description="Here will be the director" />
-    </ChildContent>
-    <ActionTemplate>
-        <CardAction><Rate Count="1" Character="@Favorite" Style="color:red" /></CardAction>
-        <CardAction><Icon Type="like" OnClick="@(()=> OnClick("like"))" /></CardAction>
-        <CardAction><Icon Type="dislike" OnClick="@(()=> OnClick("dislike"))" /></CardAction>
-    </ActionTemplate>
-</Card>
+﻿@using SEP6.Data
+@using SEP6.Models
+@inject IMovieService MovieService
+
+<AntList Grid="grid" DataSource="@movies">
+    <ListItem >
+        <Card Style="width:300px;" Bordered>
+            <Cover><img alt="@(context.Title)" src="https://image.tmdb.org/t/p/w185/@(context.Poster)" /></Cover>
+	        <ChildContent>
+                <CardMeta Title="@(context.Title)" Description="@(context.Description)" />
+            </ChildContent>
+        </Card>
+    </ListItem>
+</AntList>
+
 
 
 
 @code {
-    RenderFragment<RateItemRenderContext> Favorite = (builder) =>
-    @<Template>
-        <Icon Type="heart" Theme="fill" />
-    </Template>;
-    RenderFragment coverTemplate = @<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />;
+	
+	public List<MovieData> movies = new List<MovieData>();
 
-    void OnClick(string icon)
+
+    protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine($"icon {icon} is clicked");
+        movies = await MovieService.GetTrendingMovies("c6b31d1cdad6a56a23f0c913e2482a31");
     }
+	
+	private ListGridType grid = new()
+    {
+        Gutter = 16,
+        Xs = 1,
+        Sm = 2,
+        Md = 4,
+        Lg = 4,
+        Xl = 6,
+        Xxl = 3,
+    };
 }

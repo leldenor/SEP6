@@ -1,34 +1,42 @@
 ﻿@page "/"
-
+@using SEP6.Data
+@using SEP6.Models
 @using SEP6.Components
+@inject IMovieService MovieService
 
 <PageTitle>Home page</PageTitle>
 
 <div>
-    <Carousel Autoplay="TimeSpan.FromSeconds(4)">
-        <CarouselSlick>1</CarouselSlick>
-		<CarouselSlick>2</CarouselSlick>
-		<CarouselSlick>3</CarouselSlick>
-		<CarouselSlick>4</CarouselSlick>
-		<CarouselSlick>5</CarouselSlick>
+    <Carousel Autoplay="TimeSpan.FromSeconds(4)" >
+		@foreach (var movie in movies){
+			<CarouselSlick>
+                <div>
+                    <Descriptions Bordered Column="@column" Layout="@DescriptionsLayout.Vertical">
+                        <DescriptionsItem>
+						    <img alt="@(movie.Title)" src="https://image.tmdb.org/t/p/w300/@(movie.Poster)" />
+                        </DescriptionsItem>
+                        <DescriptionsItem>
+						    @(movie.Description)
+                        </DescriptionsItem>								
+				    </Descriptions>
+                </div>
+            </CarouselSlick>
+        }
     </Carousel>
 </div>
 
 <div>
-<Row Gutter="16">
-    <GridCol Span="8">
-        <MovieCards />
-    </GridCol>
-    <GridCol Span="8">
-        <MovieCards />
-    </GridCol>
-</Row>
+    <MovieCards />
 </div>
 
 <style>
 	div {
 		padding-bottom: 10px;
 	}
+	
+	div img {
+		padding: 10px;
+    }
 	.ant-carousel {
 		width: 1000px;
     }
@@ -41,7 +49,22 @@
 </style>
 
 @code{
-    
+	
+	public List<MovieData> movies = new List<MovieData>();
+
+	private Dictionary<string, int> column = new Dictionary<string, int> {
+            { "xxl", 2 },
+            { "xl", 2},
+            { "lg", 2},
+            { "md", 2},
+            { "sm", 1},
+            { "xs", 1}
+        };
+	
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await MovieService.GetPopularMovies("c6b31d1cdad6a56a23f0c913e2482a31");
+    }
 }
 
 
