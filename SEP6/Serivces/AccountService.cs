@@ -23,13 +23,15 @@ namespace SEP6.Serivces {
         public async Task<Account> Login(string username, string password) {
 
             Account acc = null;
+            var accountList = new List<Account>();
             using (var connection = new SqlConnection(_connectionString.ConnectionString)) {
                 connection.Open();
                 using (var lookupCommand = connection.CreateCommand()) {
                     lookupCommand.CommandText = @"SELECT * FROM USER";
                     using (var reader = await lookupCommand.ExecuteReaderAsync()) {
+                        // needs to be changed -> create a list and add to it
                         while (await reader.ReadAsync()) {
-                            accounts.Add(new Account() {
+                            accountList.Add(new Account() {
                                 _id = reader.GetString(0),
                                 Username = reader.GetString(1),
                                 Password = reader.GetString(2),
@@ -37,10 +39,8 @@ namespace SEP6.Serivces {
                                 email = reader.GetString(4)
                             });
 
-                            acc = CheckLogin(accounts, username, password);
+                            acc = CheckLogin(accountList, username, password);
                         }
-                        var tempAcc = accounts;
-                        accounts.Clear();
                         return acc;
                     }
                 }
@@ -76,8 +76,8 @@ namespace SEP6.Serivces {
 
         [HttpGet]
         public async Task<Account> GetUser(string username) {
-            Account acc = null;
 
+            var accountToGet = new Account();
             using (var connection = new SqlConnection(_connectionString.ConnectionString)) {
                 connection.Open();
                 using (var lookupCommand = connection.CreateCommand()) {
@@ -89,18 +89,17 @@ namespace SEP6.Serivces {
                     lookupCommand.Parameters.Add(usernameLookup);
                     using (var reader = await lookupCommand.ExecuteReaderAsync()) {
                         while (await reader.ReadAsync()) {
-                            return new Account acc(
-                                acc._id = reader.GetString(0),
-                                acc.Username = reader.GetString(1),
-                                acc.Password = reader.GetString(2),
-                                acc.PictureURL = reader.GetString(3),
-                                acc.email = reader.GetString(4));
-                            }
-
+                            accountToGet._id = reader.GetString(0);
+                            accountToGet.Username = reader.GetString(1);
+                            accountToGet.Password = reader.GetString(2);
+                            accountToGet.PictureURL = reader.GetString(3);
+                            accountToGet.email = reader.GetString(4);
                         }
                     }
+                    return accountToGet;
                 }
             }
+        }
 
         public Account CheckLogin(List<Account> accs, string username, string password) {
             Account? accToReturn = null;
