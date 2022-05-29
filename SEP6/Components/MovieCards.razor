@@ -1,4 +1,4 @@
-﻿@using SEP6.Data
+﻿@using SEP6.Serivces
 @using SEP6.Models
 @inject IMovieService MovieService
 
@@ -8,6 +8,7 @@
             <Cover><img alt="@(context.Title)" src="https://image.tmdb.org/t/p/w185/@(context.Poster)" /></Cover>
 	        <ChildContent>
                 <CardMeta Title="@(context.Title)" Description="@(context.Description)" />
+				
             </ChildContent>
         </Card>
     </ListItem>
@@ -23,7 +24,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        movies = await MovieService.GetTrendingMovies("c6b31d1cdad6a56a23f0c913e2482a31");
+        movies = await MovieService.GetTrendingMovies();
     }
 	
 	private ListGridType grid = new()

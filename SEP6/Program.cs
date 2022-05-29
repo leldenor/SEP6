@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using SEP6.Data;
+using SEP6.Serivces;
 
 var builder = WebApplication.CreateBuilder(args);
 

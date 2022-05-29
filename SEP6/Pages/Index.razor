@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using SEP6.Data
+@using SEP6.Serivces
 @using SEP6.Models
 @using SEP6.Components
 @inject IMovieService MovieService
@@ -63,7 +63,7 @@
 	
     protected override async Task OnInitializedAsync()
     {
-        movies = await MovieService.GetPopularMovies("c6b31d1cdad6a56a23f0c913e2482a31");
+        movies = await MovieService.GetPopularMovies();
     }
 }
 

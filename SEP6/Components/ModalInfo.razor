@@ -1,0 +1,76 @@
+﻿@using SEP6.Models
+@using SEP6.Serivces
+@inject IMovieService MovieService
+
+<div>
+	<Space>
+		<SpaceItem>
+			<Tooltip Title="@("Add to favorites")">
+			<Rate Character="@favorite" Count="1"  ValueChanged="onFavorite" Style="color:red" />
+			</Tooltip>
+		</SpaceItem>
+		<SpaceItem>
+			<Button Icon="@IconType.Outline.Comment" Style="width:40px; height:40px"/>
+		</SpaceItem>
+	</Space>
+	<Rate ValueChanged="onRating" Style="float:right" DefaultValue="5"/>
+</div>
+
+<div style="padding-top:10px">
+	<Row>
+		<Col Span="12">
+			<iframe height="320" width="450" src="https://www.youtube.com/embed/@(Movie.Trailer)" />
+		</Col>
+		<Col Span="12">
+			<Descriptions Title="Movie info" Bordered Column="@column">
+				<DescriptionsItem Title="Director">@Movie.Director</DescriptionsItem>
+				<DescriptionsItem Title="Genre">
+					@foreach (var genre in Movie.Genres){
+					<Tag>@genre</Tag>
+					}
+				</DescriptionsItem>
+				<DescriptionsItem Title="Actors">
+					@foreach (var item in Movie.Actors)
+					{
+						<Tag>@item</Tag>
+					}
+				</DescriptionsItem>
+			</Descriptions>
+		</Col>
+	</Row>
+</div>
+
+
+@code {
+	private MovieData Movie = new MovieData();
+
+	RenderFragment<RateItemRenderContext> favorite = (builder) =>
+	@<Template>
+				<Icon Type="heart" Theme="fill" Style="font-size:40px" />
+	</Template>
+	;
+
+	protected override void OnInitialized()
+    {
+        Movie = MovieService.GetMovie();
+    }
+	
+	void onFavorite(decimal value)
+	{
+		
+	}
+	
+	void onRating(decimal value)
+	{
+
+	}
+	
+	private Dictionary<string, int> column = new Dictionary<string, int> {
+            { "xxl", 1 },
+            { "xl", 1},
+            { "lg", 1},
+            { "md", 1},
+            { "sm", 1},
+            { "xs", 1}
+        };
+}

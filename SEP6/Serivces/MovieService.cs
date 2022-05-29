@@ -4,30 +4,36 @@ using TMDbLib.Objects.General;
 using TMDbLib.Objects.Search;
 using TMDbLib.Objects.Movies;
 using TMDbLib.Objects.Trending;
+using TMDbLib.Objects.People;
 
-namespace SEP6.Data
+namespace SEP6.Serivces
 {
     public class MovieService : IMovieService
     {
-        public async Task<List<MovieData>> GetManyMovies(string apiKey, string movie)
+        public MovieData CurrentMovie { get; set; }
+
+        private string apiKey = "c6b31d1cdad6a56a23f0c913e2482a31";
+        public async Task<List<MovieData>> GetManyMovies(string movie)
         {
             TMDbClient client = new TMDbClient(apiKey);
             SearchContainer<SearchMovie> results = client.SearchMovieAsync(movie).Result;
             List<MovieData> movies = new();
             foreach (SearchMovie result in results.Results.Take(10))
             {
-                movies.Add(new MovieData { 
-                    Title = result.Title, 
+                movies.Add(new MovieData
+                {
+                    Id = result.Id,
+                    Title = result.Title,
                     Description = result.Overview,
-                    Poster = result.PosterPath 
+                    Poster = result.PosterPath
                 });
 
             }
             return movies;
         }
 
-		public async Task<List<MovieData>> GetTrendingMovies(string apiKey)
-		{
+        public async Task<List<MovieData>> GetTrendingMovies()
+        {
             TMDbClient client = new TMDbClient(apiKey);
             SearchContainer<SearchMovie> popular = await client.GetTrendingMoviesAsync(TimeWindow.Week);
             List<MovieData> movies = new();
@@ -35,6 +41,7 @@ namespace SEP6.Data
             {
                 movies.Add(new MovieData
                 {
+                    Id = result.Id,
                     Title = result.Title,
                     Description = result.Overview,
                     Poster = result.PosterPath,
@@ -45,7 +52,7 @@ namespace SEP6.Data
             return movies;
         }
 
-		public async Task<List<MovieData>> GetPopularMovies(string apiKey)
+        public async Task<List<MovieData>> GetPopularMovies()
         {
             TMDbClient client = new TMDbClient(apiKey);
             SearchContainer<SearchMovie> popular = await client.GetMoviePopularListAsync();
@@ -54,6 +61,7 @@ namespace SEP6.Data
             {
                 movies.Add(new MovieData
                 {
+                    Id = result.Id,
                     Title = result.Title,
                     Description = result.Overview,
                     Poster = result.PosterPath,
@@ -62,6 +70,32 @@ namespace SEP6.Data
 
             }
             return movies;
+        }
+
+        public MovieData GetMovie()
+        {
+            
+            return CurrentMovie;
+        }
+
+        public async Task<bool> SetMovie(int id)
+        {
+            TMDbClient client = new TMDbClient(apiKey);
+            Movie movie = await client.GetMovieAsync(id, MovieMethods.Credits | MovieMethods.Videos);
+            MovieData movieData = new MovieData
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Description = movie.Overview,
+                Poster = movie.PosterPath,
+                ReleaseDate = movie.ReleaseDate == null ? "Unknown" : movie.ReleaseDate.ToString(),
+                Genres = movie.Genres.Select(x => x.Name).ToList(),
+                Actors = movie.Credits.Cast.Select(x => x.Name).ToList(),
+                Director = movie.Credits.Crew.Where(x => x.Job == "Director").Select(x => x.Name).FirstOrDefault(),
+                Trailer = movie.Videos.Results.Where(x => x.Type == "Trailer").Select(x => x.Key).FirstOrDefault()
+            };
+            CurrentMovie = movieData;
+            return true;
         }
     }
 }

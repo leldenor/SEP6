@@ -1,7 +1,8 @@
 ﻿@page "/movies"
-@using SEP6.Data
+@using SEP6.Serivces
 @using SEP6.Models
 @using System.Web
+@using SEP6.Components
 @inject NavigationManager NavigationManager
 @inject IMovieService MovieService
 
@@ -12,6 +13,9 @@
 <AntList Grid="grid" DataSource="@Movies">
     <ListItem >
         <Card Bordered Title="@(context.Title)">
+            <Extra>
+                <Button Icon="@IconType.Outline.More" OnClick="@(()=>onCardClick(context))"/>
+            </Extra>
 			<Cover><img alt="@(context.Title)" src="https://image.tmdb.org/t/p/w185/@(context.Poster)" /></Cover>
             <Body>
             @(context.Description)
@@ -20,19 +24,30 @@
     </ListItem>
 </AntList>
 
+<Modal 
+    Title="@currentMovie.Title"
+    Visible="@_visible"
+	Footer="null"
+	OnCancel="@(()=>{ _visible = false; })"
+	Width="1000"
+>
+    <ModalInfo />
+</Modal>
+
 @code
 {
-	public List<MovieData> Movies = new List<MovieData>();
-	
-	protected async void OnSearch(string value) {
-        Movies = await MovieService.GetManyMovies("c6b31d1cdad6a56a23f0c913e2482a31", value);
-    }
-	
-	protected override async Task OnInitializedAsync()
-    {
-        Movies = await MovieService.GetManyMovies("c6b31d1cdad6a56a23f0c913e2482a31", "A");
+    public List<MovieData> Movies = new List<MovieData>();
+    bool _visible = false;
+    MovieData currentMovie = new MovieData();
+
+    protected async void OnSearch(string value) {
+        Movies = await MovieService.GetManyMovies(value);
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        Movies = await MovieService.GetManyMovies("A");
+    }
 
     private ListGridType grid = new()
     {
@@ -44,6 +59,18 @@
         Xl = 3,
         Xxl = 3,
     };
+
+    async Task onCardClick(MovieData movie)
+    {
+
+        bool result = await MovieService.SetMovie(movie.Id);
+        if (result)
+        {
+            _visible = true;
+            currentMovie = movie;
+        }
+        
+    }
 
     
 

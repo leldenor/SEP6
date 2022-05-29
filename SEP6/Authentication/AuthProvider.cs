@@ -22,7 +22,7 @@ namespace SEP6.Authentication {
             this.accountService = accountService;
         }
 
-        public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
+        /*public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
             ClaimsIdentity identity = new ClaimsIdentity();
             if (cachedUser == null) {
                 string userAsJson = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", "currentUser");
@@ -38,7 +38,7 @@ namespace SEP6.Authentication {
 
             ClaimsPrincipal cachedClaimsPrincipal = new ClaimsPrincipal(identity);
             return await Task.FromResult(new AuthenticationState(cachedClaimsPrincipal));
-        }
+        }*/
 
         private ClaimsIdentity SetupClaimsForUser(Account cachedUser) {
             throw new NotImplementedException();
