@@ -10,7 +10,7 @@
 			</Tooltip>
 		</SpaceItem>
 		<SpaceItem>
-			<Button Icon="@IconType.Outline.Comment" Style="width:40px; height:40px"/>
+			<Button Icon="@IconType.Outline.Comment" Style="width:40px; height:40px" OnClick="@(()=>{_visible = true; })" />
 		</SpaceItem>
 	</Space>
 	<Rate ValueChanged="onRating" Style="float:right" DefaultValue="5"/>
@@ -40,15 +40,58 @@
 	</Row>
 </div>
 
+<Modal 
+    Title="@Movie.Title"
+    Visible="@_visible"
+	Footer="null"
+	OnCancel="@(()=>{ _visible = false; })"
+	Width="1000"
+>
+    <AntList DataSource="@reviews" Class="comment-list">
+		<ListItem >
+			<Comment  Avatar="context.Avatar" Author="context.Author" Content="context.Content"></Comment>
+		</ListItem>
+	</AntList>
+	<div>
+        <TextArea MinRows="4" @bind-Value="@_value" />
+        <br/>
+        <br/>
+        <Button Loading="@submitting" OnClick="onSubmit " type="primary">
+            Add Comment
+        </Button>
+    </div>
+</Modal>
 
 @code {
 	private MovieData Movie = new MovieData();
+	private List<MovieReview> reviews = new List<MovieReview>();
+	private string _value = "";
+	bool _visible = false;
+	bool like = false;
+    bool dislike = false;
+	bool submitting = false;
 
 	RenderFragment<RateItemRenderContext> favorite = (builder) =>
 	@<Template>
-				<Icon Type="heart" Theme="fill" Style="font-size:40px" />
+		<Icon Type="heart" Theme="fill" Style="font-size:40px" />
 	</Template>
 	;
+
+	/*RenderFragment likeAction=>
+        @<span>
+            <Tooltip Title="@("Like")">
+                <Icon Type="like" Theme="@(like ? "fill" : "outline")" OnClick="SetLike" />
+            </Tooltip>
+            <span>@(like ? 1 : 0)</span>
+        </span>;
+
+    RenderFragment dislikeAction=>
+        @<span>
+            <Tooltip Title="@("Dislike")">
+                <Icon Type="dislike" Theme="@(dislike ? "fill" : "outline")" OnClick="SetDislike" />
+            </Tooltip>
+            <span>@(dislike ? 1:0)</span>
+        </span>;*/
 
 	protected override void OnInitialized()
     {
@@ -64,6 +107,14 @@
 	{
 
 	}
+
+	async void onSubmit()
+    {
+		submitting = true;
+		await Task.Delay(1000);
+		submitting = false; 
+		await InvokeAsync(StateHasChanged);
+    }
 	
 	private Dictionary<string, int> column = new Dictionary<string, int> {
             { "xxl", 1 },

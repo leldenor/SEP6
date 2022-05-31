@@ -12,7 +12,7 @@ namespace SEP6.Serivces
     {
         public MovieData CurrentMovie { get; set; }
 
-        private string apiKey = "c6b31d1cdad6a56a23f0c913e2482a31";
+        private string apiKey = "9bce3ad7d5f0f4ec48ec6f30ceccdfe6";
         public async Task<List<MovieData>> GetManyMovies(string movie)
         {
             TMDbClient client = new TMDbClient(apiKey);
@@ -96,6 +96,23 @@ namespace SEP6.Serivces
             };
             CurrentMovie = movieData;
             return true;
+        }
+
+        public async Task<List<ActorData>> GetActorsAsync()
+        {
+            TMDbClient client = new TMDbClient(apiKey);
+            SearchContainer<PersonResult> person = await client.GetPersonListAsync(PersonListType.Popular);
+            List<ActorData> actors = new();
+            foreach (PersonResult result in person.Results)
+            {
+                actors.Add(new ActorData
+                {
+                    Id = result.Id,
+                    Name = result.Name,
+                    Profile = result.ProfilePath
+                });
+            }
+            return actors;
         }
     }
 }

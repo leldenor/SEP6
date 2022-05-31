@@ -1,0 +1,40 @@
+﻿@page "/actors"
+@using SEP6.Models
+@using SEP6.Serivces
+@inject IMovieService MovieService 
+
+<h3>Actors</h3>
+<AntList Grid="grid" DataSource="@Actors">
+    <ListItem >
+        <Card Hoverable Style="width:200px">
+            <Cover>
+				<img alt="@(context.Name)" src="https://image.tmdb.org/t/p/w185/@(context.Profile)" />
+            </Cover>
+			<ChildContent>
+                <CardMeta Title="@(context.Name)"
+                />
+			</ChildContent>
+        </Card>
+    </ListItem>
+</AntList>
+
+@code{
+    public List<ActorData> Actors = new List<ActorData>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Actors = await MovieService.GetActorsAsync();
+    }
+
+    private ListGridType grid = new()
+    {
+        Gutter = 16,
+        Xs = 1,
+        Sm = 2,
+        Md = 4,
+        Lg = 5,
+        Xl = 5,
+        Xxl = 5,
+    };
+
+}

@@ -9,5 +9,6 @@ namespace SEP6.Serivces
         Task<List<MovieData>> GetManyMovies(string movie);
         Task<List<MovieData>> GetPopularMovies();
         Task<List<MovieData>> GetTrendingMovies();
+        Task<List<ActorData>> GetActorsAsync();
     }
 }

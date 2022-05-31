@@ -5,8 +5,9 @@
 @using System.ComponentModel
 @inject NavigationManager NavigationManager
 
+
     <Form Model="@model"
-          OnFinish="OnFinish"
+          OnFinish="OnFinishLogin"
           OnFinishFailed="OnFinishFailed"
           LabelColSpan="8"
           WrapperColSpan="16">
@@ -17,14 +18,29 @@
             <InputPassword @bind-Value="@context.Password" />
         </FormItem>
         <FormItem WrapperColOffset="8" WrapperColSpan="16">
-            <Checkbox @bind-Value="context.RememberMe">Remember me</Checkbox>
-        </FormItem>
-        <FormItem WrapperColOffset="8" WrapperColSpan="16">
             <Button Type="@ButtonType.Primary" HtmlType="submit">
-                Submit
+                Login
+            </Button>
+             <Button HtmlType="button" OnClick="@(()=>{_ModalVisible = true; })">
+                Register
             </Button>
         </FormItem>
     </Form>
+	
+	<Modal Title=@("Register")
+           Visible="@_ModalVisible"
+           OnOk="@HandleOk"
+           OnCancel="@HideUserModal"
+           >
+        <Form Model="@model" Layout="@FormLayout.Vertical" OnFinish="OnFinishRegister" @ref="@_formRegister">
+            <FormItem>
+                <Input @bind-Value="@context.Username" />
+            </FormItem>
+            <FormItem Label="Password">
+                <InputPassword @bind-Value="@context.Password" />
+            </FormItem>
+        </Form>
+    </Modal>
 @code
 {
     public class Model
@@ -35,12 +51,13 @@
         public string Password { get; set; }
         public bool RememberMe { get; set; } = true;
     }
-
+	private Form<Model> _formRegister;
     private Model model = new Model();
+	public bool _ModalVisible = false;
 
-    private void OnFinish(EditContext editContext)
+    private void OnFinishLogin(EditContext editContext)
     {
-        Console.WriteLine($"Success:{JsonSerializer.Serialize(model)}");
+        
         if (model.Username == "admin" && model.Password == "admin")
         {
             NavigationManager.NavigateTo("/");
@@ -49,6 +66,22 @@
 
     private void OnFinishFailed(EditContext editContext)
     {
-        Console.WriteLine($"Failed:{JsonSerializer.Serialize(model)}");
+        
+    }
+	
+	private void OnFinishRegister(EditContext editContext)
+    {
+		NavigationManager.NavigateTo("/");
+    }
+	
+     private void HideUserModal()
+    {
+        _ModalVisible = false;
+		_formRegister.Reset();
+    }
+	
+	private void HandleOk(MouseEventArgs args)
+    {
+        _formRegister.Submit();
     }
 }
