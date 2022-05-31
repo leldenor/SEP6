@@ -22,7 +22,7 @@ namespace SEP6.Authentication {
             this.accountService = accountService;
         }
 
-        public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
+        public async Task<AuthenticationState> GetAuthenticationStateAsync() {
             ClaimsIdentity identity = new ClaimsIdentity();
             if (cachedUser == null) {
                 string userAsJson = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", "currentUser");

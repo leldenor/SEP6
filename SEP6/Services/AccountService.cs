@@ -9,7 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SEP6.Serivces {
+namespace SEP6.Services {
     public class AccountService {
 
         private readonly SqlConnectionStringBuilder _connectionString;
@@ -22,10 +22,10 @@ namespace SEP6.Serivces {
         [HttpGet]
         public async Task<Account> Login(string username, string password) {
 
-            Account acc = null;
+            var acc = new Account();
             var accountList = new List<Account>();
             using (var connection = new SqlConnection(_connectionString.ConnectionString)) {
-                connection.Open();
+                connection.OpenWithRetry();
                 using (var lookupCommand = connection.CreateCommand()) {
                     lookupCommand.CommandText = @"SELECT * FROM USER";
                     using (var reader = await lookupCommand.ExecuteReaderAsync()) {
@@ -40,6 +40,7 @@ namespace SEP6.Serivces {
                             });
 
                             acc = CheckLogin(accountList, username, password);
+                            accountList.Clear();
                         }
                         return acc;
                     }
@@ -51,7 +52,7 @@ namespace SEP6.Serivces {
 
             try {
                 using (var connection = new SqlConnection(_connectionString.ConnectionString)) {
-                    connection.Open();
+                    connection.OpenWithRetry();
                     using (var registerCommand = connection.CreateCommand()) {
                         registerCommand.CommandText = @"INSERT INTO USER (username, password) VALUES (@username, @password)";
                         var usernameToDB = registerCommand.CreateParameter();
@@ -79,7 +80,7 @@ namespace SEP6.Serivces {
 
             var accountToGet = new Account();
             using (var connection = new SqlConnection(_connectionString.ConnectionString)) {
-                connection.Open();
+                connection.OpenWithRetry();
                 using (var lookupCommand = connection.CreateCommand()) {
                     lookupCommand.CommandText = @"SELECT * FROM USER WHERE USERNAME = @username";
                     var usernameLookup = lookupCommand.CreateParameter();
@@ -109,7 +110,7 @@ namespace SEP6.Serivces {
                     accToReturn = account;
                 }
                 else {
-                    
+                    accToReturn = null;
                 }
             }
             return accToReturn;
