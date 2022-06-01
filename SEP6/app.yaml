@@ -2,7 +2,7 @@
 env: flex
 
 env_variables:
-	DB_USER: <your-username>
+    DB_USER: <your-username>
     DB_PASS: <password>
     DB_NAME: <dbname>
     INSTANCE_HOST: cloudsql
