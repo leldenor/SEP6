@@ -2,10 +2,18 @@
 env: flex
 
 env_variables:
-    DB_USER: <your-username>
-    DB_PASS: <password>
-    DB_NAME: <dbname>
+    DB_USER: root
+    DB_PASS: 1357908642
+    DB_NAME: egg6
     INSTANCE_HOST: cloudsql
     
 beta_settings:
-    cloud_sql_instance: "<project-name>:<region>:<instance-name>=tcp:3306"
+    cloud_sql_instance: "sep6-352012:europe-central2:sep6-sql=tcp:3306"
+    
+manual_scaling:
+    instances: 1
+    
+resources:
+    cpu: 1
+    memory_gb: 0.5
+    disk_size_gb: 10

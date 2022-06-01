@@ -8,9 +8,10 @@ namespace SEP6.Models {
 
         public int _id { get; set; }
 
-        public string timestamp { get; set; }
+        public DateTime timestamp { get; set; }
 
         public int userID { get; set; }
+        public string username { get; set; }
 
         public string contents { get; set; }
     }

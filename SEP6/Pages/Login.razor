@@ -3,7 +3,9 @@
 @using System.ComponentModel.DataAnnotations;
 @using System.Text.Json;
 @using System.ComponentModel
+@using SEP6.Serivces
 @inject NavigationManager NavigationManager
+@inject AccountService AccountService
 
 
     <Form Model="@model"
@@ -26,6 +28,7 @@
             </Button>
         </FormItem>
     </Form>
+	<div style="color:red">@errorMessage</div>
 	
 	<Modal Title=@("Register")
            Visible="@_ModalVisible"
@@ -40,6 +43,7 @@
                 <InputPassword @bind-Value="@context.Password" />
             </FormItem>
         </Form>
+		<div style="color:red">@errorMessage</div>
     </Modal>
 @code
 {
@@ -51,27 +55,42 @@
         public string Password { get; set; }
         public bool RememberMe { get; set; } = true;
     }
-	private Form<Model> _formRegister;
+    private Form<Model> _formRegister;
     private Model model = new Model();
-	public bool _ModalVisible = false;
+    public bool _ModalVisible = false;
+    string errorMessage;
 
-    private void OnFinishLogin(EditContext editContext)
+    private async Task OnFinishLogin(EditContext editContext)
     {
-        
-        if (model.Username == "admin" && model.Password == "admin")
+        errorMessage="";
+        try
         {
+            await AccountService.Login(model.Username, model.Password);
             NavigationManager.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
         }
     }
 
     private void OnFinishFailed(EditContext editContext)
     {
-        
+        errorMessage = "Somethhing went wrong";
     }
 	
-	private void OnFinishRegister(EditContext editContext)
+	private async Task OnFinishRegister(EditContext editContext)
     {
-		NavigationManager.NavigateTo("/");
+		errorMessage = "";
+		try
+        {
+            await AccountService.Register(model.Username, model.Password);
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+        }
     }
 	
      private void HideUserModal()

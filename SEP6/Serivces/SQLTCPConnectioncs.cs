@@ -14,7 +14,7 @@ namespace SEP6.Services
             var connectionString = new MySqlConnectionStringBuilder()
             {
                 SslMode = MySqlSslMode.Disabled,
-                Server = Environment.GetEnvironmentVariable("Instance HOST"), // ip address
+                Server = Environment.GetEnvironmentVariable("34.118.87.40"), // ip address
                 UserID = Environment.GetEnvironmentVariable("DB_USER"),
                 Password = Environment.GetEnvironmentVariable("DB_PASS"),
                 Database = Environment.GetEnvironmentVariable("DB_NAME"),

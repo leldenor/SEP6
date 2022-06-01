@@ -63,13 +63,8 @@
     async Task onCardClick(MovieData movie)
     {
 
-        bool result = await MovieService.SetMovie(movie.Id);
-        if (result)
-        {
-            _visible = true;
-            currentMovie = movie;
-        }
-        
+       MovieService.SetMovie(movie.Id);
+	   _visible = true;
     }
 
     

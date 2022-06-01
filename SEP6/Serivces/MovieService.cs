@@ -10,7 +10,7 @@ namespace SEP6.Serivces
 {
     public class MovieService : IMovieService
     {
-        public MovieData CurrentMovie { get; set; }
+        public int CurrentMovieId { get; set; }
 
         private string apiKey = "9bce3ad7d5f0f4ec48ec6f30ceccdfe6";
         public async Task<List<MovieData>> GetManyMovies(string movie)
@@ -72,16 +72,10 @@ namespace SEP6.Serivces
             return movies;
         }
 
-        public MovieData GetMovie()
-        {
-            
-            return CurrentMovie;
-        }
-
-        public async Task<bool> SetMovie(int id)
+        public async Task<MovieData> GetMovie()
         {
             TMDbClient client = new TMDbClient(apiKey);
-            Movie movie = await client.GetMovieAsync(id, MovieMethods.Credits | MovieMethods.Videos);
+            Movie movie = await client.GetMovieAsync(CurrentMovieId, MovieMethods.Credits | MovieMethods.Videos);
             MovieData movieData = new MovieData
             {
                 Id = movie.Id,
@@ -94,8 +88,13 @@ namespace SEP6.Serivces
                 Director = movie.Credits.Crew.Where(x => x.Job == "Director").Select(x => x.Name).FirstOrDefault(),
                 Trailer = movie.Videos.Results.Where(x => x.Type == "Trailer").Select(x => x.Key).FirstOrDefault()
             };
-            CurrentMovie = movieData;
-            return true;
+
+            return movieData;
+        }
+
+        public void SetMovie(int id)
+        {
+            CurrentMovieId = id;
         }
 
         public async Task<List<ActorData>> GetActorsAsync()

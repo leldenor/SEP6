@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace SEP6.Models {
     public class Account {
 
-        public string _id { get; set; }
+        public int _id { get; set; }
 
         [Required, MinLength(3, ErrorMessage = "Please Enter Username with at least 3 characters")]
         [JsonPropertyName("Username")]
@@ -18,10 +18,6 @@ namespace SEP6.Models {
         [JsonPropertyName("Password")]
 
         public string Password { get; set; }
-
-        [JsonPropertyName("pictureURL")] public string PictureURL { get; set; }
-
-        [Required] public string email { get; set; }
 
         //Favourite movies by ID - add later Note : Critical
         //public List<string> FavouriteMovies { get; set; }

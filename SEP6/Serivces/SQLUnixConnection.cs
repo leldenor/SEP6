@@ -14,7 +14,7 @@ namespace SEP6.Services
             var connectionString = new MySqlConnectionStringBuilder()
             {
                 SslMode = MySqlSslMode.Disabled,
-                Server = Environment.GetEnvironmentVariable("Instance UNIX Socket"), // '/cloudsql/project:region:instance'
+                Server = Environment.GetEnvironmentVariable("sep6-352012:europe-central2:sep6-sql"), // '/cloudsql/project:region:instance'
                 UserID = Environment.GetEnvironmentVariable("DB_USER"),
                 Password = Environment.GetEnvironmentVariable("DB_PASS"),
                 Database = Environment.GetEnvironmentVariable("DB_NAME"),

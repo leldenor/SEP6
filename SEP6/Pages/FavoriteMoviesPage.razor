@@ -2,17 +2,20 @@
 @using SEP6.Serivces
 @using SEP6.Models
 @inject IMovieService MovieService
+@inject IAccountService AccountService
 @inject AuthenticationStateProvider CustomAuthenticationStateProvider
 
 <h3>FavoriteMoviesPage</h3>
 <AntList Grid="grid" DataSource="@movies">
     <ListItem >
-        <Card Style="width:300px;" Bordered>
-            <Cover><img alt="@(context.Title)" src="https://image.tmdb.org/t/p/w185/@(context.Poster)" /></Cover>
-	        <ChildContent>
-                <CardMeta Title="@(context.Title)" Description="@(context.Description)" />
-				
-            </ChildContent>
+        <Card Bordered Title="@(context.Title)" Style="width:300px;">
+            <Extra>
+                <Button Icon="@IconType.Outline.More" OnClick="@(()=>onCardClick(context))"/>
+            </Extra>
+			<Cover><img alt="@(context.Title)" src="https://image.tmdb.org/t/p/w185/@(context.Poster)" /></Cover>
+            <Body>
+            @(context.Description)
+            </Body>
         </Card>
     </ListItem>
 </AntList>
@@ -21,16 +24,18 @@
 
 
 @code {
-	
-	public List<MovieData> movies = new List<MovieData>();
+
+    public List<MovieData> movies = new List<MovieData>();
+    bool _visible = false;
+    MovieData currentMovie = new MovieData();
 
 
     protected override async Task OnInitializedAsync()
     {
-        movies = await MovieService.GetTrendingMovies();
+        movies = await AccountService.GetFavouriteMovies();
     }
-	
-	private ListGridType grid = new()
+
+    private ListGridType grid = new()
     {
         Gutter = 16,
         Xs = 1,
@@ -40,4 +45,12 @@
         Xl = 6,
         Xxl = 3,
     };
+
+    void onCardClick(MovieData movie)
+    {
+
+        MovieService.SetMovie(movie.Id);
+        _visible = true;
+		
+    }
 }
