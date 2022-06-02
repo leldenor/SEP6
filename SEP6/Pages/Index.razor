@@ -1,9 +1,70 @@
 ﻿@page "/"
+@using SEP6.Serivces
+@using SEP6.Models
+@using SEP6.Components
+@inject IMovieService MovieService
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Home page</PageTitle>
 
-<h1>Hello, world!</h1>
+<div>
+    <Carousel Autoplay="TimeSpan.FromSeconds(4)" >
+		@foreach (var movie in movies){
+			<CarouselSlick>
+                <div>
+                    <Descriptions Bordered Column="@column" Layout="@DescriptionsLayout.Vertical">
+                        <DescriptionsItem>
+						    <img alt="@(movie.Title)" src="https://image.tmdb.org/t/p/w300/@(movie.Poster)" />
+                        </DescriptionsItem>
+                        <DescriptionsItem>
+						    @(movie.Description)
+                        </DescriptionsItem>								
+				    </Descriptions>
+                </div>
+            </CarouselSlick>
+        }
+    </Carousel>
+</div>
 
-Welcome to your new app.
+<div>
+    <MovieCards />
+</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<style>
+	div {
+		padding-bottom: 10px;
+	}
+	
+	div img {
+		padding: 10px;
+    }
+	.ant-carousel {
+		width: 1000px;
+    }
+    .ant-carousel .slick-slide {
+        text-align: center;
+        background: #364d79;
+		line-height: 400px;
+		overflow: hidden;
+    }
+</style>
+
+@code{
+	
+	public List<MovieData> movies = new List<MovieData>();
+
+	private Dictionary<string, int> column = new Dictionary<string, int> {
+            { "xxl", 2 },
+            { "xl", 2},
+            { "lg", 2},
+            { "md", 2},
+            { "sm", 1},
+            { "xs", 1}
+        };
+	
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await MovieService.GetPopularMovies();
+    }
+}
+
+

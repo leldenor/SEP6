@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using SEP6.Authentication
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>SEP6</PageTitle>
 
@@ -8,12 +11,34 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
+         <AuthorizeView>
+            <Authorized>
+				<Avatar Style="color: #f56a00; background-color: #fde3cf; "> A</Avatar>
+                <a href="" @onclick="PerformLogout"> Log out </a>
+            </Authorized>
+            <NotAuthorized>
+                <Button Icon="user" OnClick="onLogin" />>
+            </NotAuthorized>
+        </AuthorizeView>
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+
+@code {
+	
+    private void onLogin() => NavigationManager.NavigateTo("/login");
+
+    public async Task PerformLogout()
+    {
+        try
+        {
+            ((AuthProvider) AuthenticationStateProvider).Logout();
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+        }
+    }
+}

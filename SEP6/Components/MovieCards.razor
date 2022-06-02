@@ -1,0 +1,40 @@
+﻿@using SEP6.Serivces
+@using SEP6.Models
+@inject IMovieService MovieService
+
+<AntList Grid="grid" DataSource="@movies">
+    <ListItem >
+        <Card Style="width:300px;" Bordered>
+            <Cover><img alt="@(context.Title)" src="https://image.tmdb.org/t/p/w185/@(context.Poster)" /></Cover>
+	        <ChildContent>
+                <CardMeta Title="@(context.Title)" Description="@(context.Description)" />
+				
+            </ChildContent>
+        </Card>
+    </ListItem>
+</AntList>
+
+
+
+
+@code {
+	
+	public List<MovieData> movies = new List<MovieData>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await MovieService.GetTrendingMovies();
+    }
+	
+	private ListGridType grid = new ListGridType()
+    {
+        Gutter = 16,
+        Xs = 1,
+        Sm = 2,
+        Md = 4,
+        Lg = 4,
+        Xl = 6,
+        Xxl = 3,
+    };
+}
