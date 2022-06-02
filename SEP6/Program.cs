@@ -1,16 +1,16 @@
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Hosting;
-using MySql.Data.MySqlClient;
-using Polly;
-using SEP6.Authentication;
-using SEP6.Serivces;
-using SEP6.Services;
-using SEP6.Settings;
-using System.Data.Common;
 using Google.Cloud.Diagnostics.AspNetCore;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using SEP6.Settings;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SEP6
 {
@@ -19,15 +19,8 @@ namespace SEP6
         public static AppSettings AppSettings { get; private set; }
         public static void Main(string[] args)
         {
-            StartupExtensions.InitializeDatabase();
             BuildWebHost(args).Build().Run();
-            //CreateHostBuilder(args).Build().Run();
         }
-
-
-        /*public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });*/
 
         public static IWebHostBuilder BuildWebHost(string[] args)
         {
@@ -41,7 +34,6 @@ namespace SEP6
                 .UseStartup<Startup>()
                 .UsePortEnvironmentVariable();
         }
-
         private static void ReadAppSettings()
         {
             var config = new ConfigurationBuilder()
@@ -66,5 +58,3 @@ namespace SEP6
         }
     }
 }
-
-

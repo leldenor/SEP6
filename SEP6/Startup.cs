@@ -1,24 +1,28 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿
+using Microsoft.AspNetCore.Components.Authorization;
 using MySql.Data.MySqlClient;
 using Polly;
 using SEP6.Authentication;
 using SEP6.Serivces;
 using SEP6.Services;
+using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace SEP6
 {
     public class Startup
     {
-
-        public IConfiguration Configuration { get; }
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public void ConfigurationsServices(IServiceCollection services)
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
@@ -34,6 +38,7 @@ namespace SEP6
             services.AddMvc(option => option.EnableEndpointRouting = false);
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -43,6 +48,7 @@ namespace SEP6
             else
             {
                 app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -51,9 +57,11 @@ namespace SEP6
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-
+            /*app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Host");
+            });*/
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -75,24 +83,7 @@ namespace SEP6
                     TimeSpan.FromSeconds(5)
                 })
                 .Execute(() => connection.Open());
-        public static void InitializeDatabase()
-        {
-            var connectionString = GetMySqlConnectionString();
-            using (DbConnection connection = new MySqlConnection(connectionString.ConnectionString))
-            {
-                connection.OpenWithRetry();
-                using (var createTableCommand = connection.CreateCommand())
-                {
 
-                    //Fill this with MySql command
-                    createTableCommand.CommandText = @"
-                        CREATE TABLE IF NOT EXISTS
-                        
-                        )";
-                    createTableCommand.ExecuteNonQuery();
-                }
-            }
-        }
         public static MySqlConnectionStringBuilder GetMySqlConnectionString()
         {
             MySqlConnectionStringBuilder connectionString;
@@ -129,5 +120,5 @@ namespace SEP6
                                                         // [END cloud_sql_mysql_dotnet_ado_lifetime]
             return connectionString;
         }
-    }
+    } 
 }

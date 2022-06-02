@@ -18,12 +18,6 @@ namespace SEP6.Models {
         [JsonPropertyName("Password")]
 
         public string Password { get; set; }
-
-        //Favourite movies by ID - add later Note : Critical
-        //public List<string> FavouriteMovies { get; set; }
-
-        //Friends by ID - add later
-        //public List<string> Friends { get; set; }
     }
 }
 

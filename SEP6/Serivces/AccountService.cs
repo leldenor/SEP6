@@ -45,7 +45,7 @@ namespace SEP6.Serivces {
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]        
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult?> Register(string username, string password) {
+        public async Task<IActionResult> Register(string username, string password) {
 
             try {
                 using (var connection = new SqlConnection(_connectionString.ConnectionString)) {
@@ -136,7 +136,8 @@ namespace SEP6.Serivces {
                     idLookup.DbType = System.Data.DbType.Int32;
                     idLookup.Value = movieID;
                     lookupCommand.Parameters.Add(idLookup);
-                    using (var reader = await lookupCommand.ExecuteXmlReaderAsync()) {
+                    using (var reader = await lookupCommand.ExecuteXmlReaderAsync())
+                    {
                         while (await reader.ReadAsync()) {
                             reader.MoveToContent();
                             var data = reader.ReadContentAsString();

@@ -5,10 +5,7 @@ env_variables:
     DB_USER: root
     DB_PASS: 1357908642
     DB_NAME: egg6
-    INSTANCE_HOST: cloudsql
-    
-beta_settings:
-    cloud_sql_instance: "sep6-352012:europe-central2:sep6-sql=tcp:3306"
+    INSTANCE_HOST: 127.0.0.1
     
 manual_scaling:
     instances: 1

@@ -17,7 +17,7 @@ namespace SEP6.Serivces
         {
             TMDbClient client = new TMDbClient(apiKey);
             SearchContainer<SearchMovie> results = client.SearchMovieAsync(movie).Result;
-            List<MovieData> movies = new();
+            List<MovieData> movies = new List<MovieData>();
             foreach (SearchMovie result in results.Results.Take(10))
             {
                 movies.Add(new MovieData
@@ -36,7 +36,7 @@ namespace SEP6.Serivces
         {
             TMDbClient client = new TMDbClient(apiKey);
             SearchContainer<SearchMovie> popular = await client.GetTrendingMoviesAsync(TimeWindow.Week);
-            List<MovieData> movies = new();
+            List<MovieData> movies = new List<MovieData>();
             foreach (SearchMovie result in popular.Results.Take(5))
             {
                 movies.Add(new MovieData
@@ -56,7 +56,7 @@ namespace SEP6.Serivces
         {
             TMDbClient client = new TMDbClient(apiKey);
             SearchContainer<SearchMovie> popular = await client.GetMoviePopularListAsync();
-            List<MovieData> movies = new();
+            List<MovieData> movies = new List<MovieData>();
             foreach (SearchMovie result in popular.Results.Take(5))
             {
                 movies.Add(new MovieData
@@ -101,7 +101,7 @@ namespace SEP6.Serivces
         {
             TMDbClient client = new TMDbClient(apiKey);
             SearchContainer<PersonResult> person = await client.GetPersonListAsync(PersonListType.Popular);
-            List<ActorData> actors = new();
+            List<ActorData> actors = new List<ActorData>();
             foreach (PersonResult result in person.Results)
             {
                 actors.Add(new ActorData
