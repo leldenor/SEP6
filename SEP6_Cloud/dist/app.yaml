@@ -1,0 +1,16 @@
+﻿runtime: aspnetcore
+env: flex
+
+env_variables:
+    DB_USER: root
+    DB_PASS: 1357908642
+    DB_NAME: egg6
+    INSTANCE_HOST: 127.0.0.1
+    
+manual_scaling:
+    instances: 1
+    
+resources:
+    cpu: 1
+    memory_gb: 0.5
+    disk_size_gb: 10

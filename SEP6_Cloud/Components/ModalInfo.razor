@@ -1,0 +1,130 @@
+﻿@using SEP6_Cloud.Models
+@using SEP6_Cloud.Serivces
+@inject IMovieService MovieService
+@inject MessageService _message
+
+<Skeleton Loading="@isLoading">
+	<div>
+		<Space>
+			<SpaceItem>
+				<Tooltip Title="@("Add to favorites")">
+				<Rate Character="@favorite" Count="1"  ValueChanged="onFavorite" Style="color:red" />
+				</Tooltip>
+			</SpaceItem>
+			<SpaceItem>
+				<Button Icon="@IconType.Outline.Comment" Style="width:40px; height:40px" OnClick="@(()=>{_visible = true; })" />
+			</SpaceItem>
+		</Space>
+		<Rate ValueChanged="onRating" Style="float:right" DefaultValue="@defaultRating"/>
+	</div>
+
+	<div style="padding-top:10px">
+		<Row>
+			<Col Span="12">
+				<iframe height="320" width="450" src="https://www.youtube.com/embed/@(Movie.Trailer)" />
+			</Col>
+			<Col Span="12">
+				<Descriptions Title="Movie info" Bordered Column="@column">
+					<DescriptionsItem Title="Director">@Movie.Director</DescriptionsItem>
+					<DescriptionsItem Title="Genre">
+						@foreach (var genre in Movie.Genres){
+						<Tag>@genre</Tag>
+						}
+					</DescriptionsItem>
+					<DescriptionsItem Title="Actors">
+						@foreach (var item in Movie.Actors)
+						{
+							<Tag>@item</Tag>
+						}
+					</DescriptionsItem>
+				</Descriptions>
+			</Col>
+		</Row>
+	</div>
+</Skeleton>
+<Modal 
+    Title="@Movie.Title"
+    Visible="@_visible"
+	Footer="null"
+	OnCancel="@(()=>{ _visible = false; })"
+	Width="1000"
+>
+    <AntList DataSource="@reviews" Class="comment-list">
+		<ListItem >
+			<Comment Author="@context.username" Content="@context.contents" Datetime="@context.timestamp.ToString("dd/MM/yyyy HH:mm:ss")" />
+		</ListItem>
+	</AntList>
+	<AuthorizeView>
+		<div>
+			<TextArea MinRows="4" @bind-Value="@_value" />
+			<br/>
+			<br/>
+			<Button Loading="@submitting" OnClick="onSubmit " type="primary">
+				Add Comment
+			</Button>
+		</div>
+	</AuthorizeView>
+</Modal>
+
+@code {
+	private MovieData Movie = new MovieData();
+	private List<MovieReview> reviews = new List<MovieReview>();
+	private string _value = "";
+	bool _visible = false;
+	bool like = false;
+	bool dislike = false;
+	bool submitting = false;
+	decimal defaultRating = 5;
+	bool isLoading = true;
+
+	RenderFragment<RateItemRenderContext> favorite = (builder) =>
+	@<Template>
+		<Icon Type="heart" Theme="fill" Style="font-size:40px" />
+		</Template>
+	;
+
+	protected async override Task OnInitializedAsync()
+	{
+		isLoading = true;
+		Movie = await MovieService.GetMovie();
+		//reviews = await AccountService.GetReviews(Movie.Id);
+		//defaultRating = await AccountService.GetRating(Movie.Id);
+		isLoading = false;
+    }
+	
+	async Task onFavorite()
+	{
+		/*var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if ( state.User != null)
+		{
+			await AccountService.AddFavouriteMovie(Movie.Id);
+		}
+		else
+		{
+			await _message.Error("To add a favorite movie you need to login first");
+		}*/
+	}
+	
+	async Task onRating(decimal value)
+	{
+		//await AccountService.AddRating(Movie.Id, value);
+		await InvokeAsync(StateHasChanged);
+	}
+
+	async Task onSubmit()
+    {
+		submitting = true;
+		//await AccountService.PostReview(Movie.Id, _value);
+		submitting = false; 
+		await InvokeAsync(StateHasChanged);
+    }
+	
+	private Dictionary<string, int> column = new Dictionary<string, int> {
+            { "xxl", 1 },
+            { "xl", 1},
+            { "lg", 1},
+            { "md", 1},
+            { "sm", 1},
+            { "xs", 1}
+        };
+}
