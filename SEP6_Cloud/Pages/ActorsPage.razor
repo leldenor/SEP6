@@ -21,11 +21,6 @@
 @code{
     public List<ActorData> Actors = new List<ActorData>();
 
-    protected override async Task OnInitializedAsync()
-    {
-        Actors = await MovieService.GetActorsAsync();
-    }
-
     private ListGridType grid = new ListGridType()
     {
         Gutter = 16,

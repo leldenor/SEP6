@@ -10,5 +10,7 @@ namespace SEP6_Cloud.Serivces
         Task<List<MovieData>> GetPopularMovies();
         Task<List<MovieData>> GetTrendingMovies();
         Task<List<ActorData>> GetActorsAsync();
+        Task<ActorData> GetActor(int actor);
+        Task<List<MovieData>> GetMovieListByActor(int actor);
     }
 }

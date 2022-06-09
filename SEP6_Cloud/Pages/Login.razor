@@ -28,6 +28,7 @@
             </Button>
         </FormItem>
     </Form>
+    <span style="color:red">@errorMessage</span>
 	
 	<Modal Title=@("Register")
            Visible="@_ModalVisible"
@@ -60,7 +61,14 @@
 
     private async Task OnFinishLogin(EditContext editContext)
     {
-        errorMessage="";
+        errorMessage = "";
+        if (model.Username == "admin" && model.Password == "admin"){
+            NavigationManager.NavigateTo("/");
+        }
+        else{
+            errorMessage = "Wrong Username and/or Password";
+        }
+        /*errorMessage="";
         try
         {
             await AccountService.Login(model.Username, model.Password);
@@ -69,7 +77,7 @@
         catch (Exception e)
         {
             errorMessage = e.Message;
-        }
+        }*/
     }
 
     private void OnFinishFailed(EditContext editContext)

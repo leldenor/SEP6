@@ -1,18 +1,25 @@
-﻿@page "/movies"
-@using SEP6_Cloud.Serivces
-@using SEP6_Cloud.Models
-@using System.Web
+﻿@page "/actorInfo/{actorId:int}"
 @using SEP6_Cloud.Components
-@inject NavigationManager NavigationManager
+@using SEP6_Cloud.Models
+@using SEP6_Cloud.Serivces
 @inject IMovieService MovieService
 
+<h3>Actor Info</h3>
 
-<Search Placeholder="Input Movie" EnterButton="true"  OnSearch="OnSearch"/>
-<h1>Movies</h1>
-
+<div style="padding:10px">
+    <Card Hoverable Style="width:200px">
+            <Cover>
+				<img alt="@(Actor.Name)" src="https://image.tmdb.org/t/p/w185@(Actor.Profile)" />
+            </Cover>
+			<ChildContent>
+                <CardMeta Title="@(Actor.Name)"/>
+			</ChildContent>
+        </Card>
+</div>
+<div>
 <AntList Grid="grid" DataSource="@Movies">
     <ListItem >
-        <Card Bordered Title="@(context.Title)">
+        <Card Bordered Title="@(context.Title)" Style="width:200px">
             <Extra>
                 <Button Icon="@IconType.Outline.More" OnClick="@(()=>onCardClick(context))"/>
             </Extra>
@@ -23,25 +30,24 @@
         </Card>
     </ListItem>
 </AntList>
-
+</div>
 @if (_visible)
 {
- <ModalInfo />   
+    <ModalInfo />   
 }
 
-@code
-{
+@code {
+    [Parameter]
+    public int? actorId { get; set; }
+    ActorData Actor = new ActorData();
     public List<MovieData> Movies = new List<MovieData>();
     bool _visible = false;
-    MovieData currentMovie = new MovieData();
-
-    protected async void OnSearch(string value) {
-        Movies = await MovieService.GetManyMovies(value);
-    }
 
     protected override async Task OnInitializedAsync()
     {
-        Movies = await MovieService.GetManyMovies("A");
+        var id = actorId ?? 0;
+        Actor = await MovieService.GetActor(id);
+        Movies = await MovieService.GetMovieListByActor(id);
     }
 
     private ListGridType grid = new()
@@ -50,22 +56,17 @@
         Xs = 1,
         Sm = 2,
         Md = 3,
-        Lg = 3,
-        Xl = 3,
-        Xxl = 3,
+        Lg = 5,
+        Xl = 5,
+        Xxl = 5,
     };
 
     async Task onCardClick(MovieData movie)
     {
 
         MovieService.SetMovie(movie.Id);
-
         _visible = true;
     }
 
-    
 
 }
-
-
-

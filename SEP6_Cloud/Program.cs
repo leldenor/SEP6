@@ -24,7 +24,7 @@ namespace SEP6_Cloud
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            ReadAppSettings();
+            //ReadAppSettings();
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

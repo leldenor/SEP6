@@ -76,6 +76,15 @@ namespace SEP6_Cloud.Serivces
         {
             TMDbClient client = new TMDbClient(apiKey);
             Movie movie = await client.GetMovieAsync(CurrentMovieId, MovieMethods.Credits | MovieMethods.Videos);
+            List<ActorData> actors = new List<ActorData>();
+            foreach(Cast person in movie.Credits.Cast)
+            {
+                actors.Add(new ActorData
+                {
+                    Id = person.Id,
+                    Name = person.Name
+                });
+            }
             MovieData movieData = new MovieData
             {
                 Id = movie.Id,
@@ -84,7 +93,7 @@ namespace SEP6_Cloud.Serivces
                 Poster = movie.PosterPath,
                 ReleaseDate = movie.ReleaseDate == null ? "Unknown" : movie.ReleaseDate.ToString(),
                 Genres = movie.Genres.Select(x => x.Name).ToList(),
-                Actors = movie.Credits.Cast.Select(x => x.Name).ToList(),
+                Actors = actors,
                 Director = movie.Credits.Crew.Where(x => x.Job == "Director").Select(x => x.Name).FirstOrDefault(),
                 Trailer = movie.Videos.Results.Where(x => x.Type == "Trailer").Select(x => x.Key).FirstOrDefault()
             };
@@ -112,6 +121,36 @@ namespace SEP6_Cloud.Serivces
                 });
             }
             return actors;
+        }
+
+        public async Task<ActorData> GetActor(int actor)
+        {
+            TMDbClient client = new TMDbClient(apiKey);
+            Person person = await client.GetPersonAsync(actor);
+            ActorData actorData = new ActorData
+            {
+                Id = person.Id,
+                Name = person.Name,
+                Profile = person.ProfilePath
+            };
+            return actorData;
+        }
+
+        public async Task<List<MovieData>> GetMovieListByActor(int actor)
+        {
+            TMDbClient client = new TMDbClient(apiKey);
+            MovieCredits movie = await client.GetPersonMovieCreditsAsync(actor);
+            List<MovieData> movieData = new List<MovieData>();
+            foreach (MovieRole item in movie.Cast)
+            {
+                movieData.Add(new MovieData
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Poster = item.PosterPath
+                });
+            }
+            return movieData;
         }
     }
 }
